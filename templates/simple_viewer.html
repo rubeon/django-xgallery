@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+{% load thumbnail %}
+<!-- options -->
+	<simpleviewerGallery 
+	maxImageWidth="640" 
+	maxImageHeight="640" 
+	textColor="0x333333" 
+	frameColor="0x333333" 
+	frameWidth="20" 
+	stagePadding="40" 
+	thumbnailColumns="8" 
+	thumbnailRows="1" 
+	navPosition="top" 
+	title="{{ album.title }}" 
+	enableRightClickOpen="true" 
+	backgroundImagePath="" 
+	imagePath="{{ media_url }}gallery_uploads/{{ album.slug}}/" 
+	thumbPath="{{ media_url }}gallery_uploads/{{ album.slug}}/thumbs_t_w90_h120/">
+<!-- end options -->		
+{% for image in album.galleryitem_set.all %}
+	<image>
+		<!-- gen thumbnail {{ image.get_image_url|thumbnail:"height=120,width=90" }} -->
+
+		<filename>{{ image.get_file_name }}</filename>
+		<caption>{{ image.title}}</caption>
+	</image>
+{% endfor %}
+</simpleviewerGallery>

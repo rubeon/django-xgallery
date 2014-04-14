@@ -1,0 +1,25 @@
+#__GR2PROTO__
+album.name.1=0
+album.title.1=Root
+album.summary.1=
+album.parent.1=0
+album.perms.add.1=true
+album.perms.write.1=true
+album.perms.del_alb.1=true
+album.perms.create_sub.1=true
+album.info.extrafields.1=Summary,Description
+{% for album in album_list %}album.name.{{ forloop.counter|add:"1"}}={{album.id}}
+album.title.{{ forloop.counter|add:"1" }}={{ album.title }}
+album.summary.{{ forloop.counter|add:"1" }}=
+album.parent.{{ forloop.counter|add:"1" }}=0
+album.perms.add.{{ forloop.counter|add:"1" }}=true
+album.perms.write.{{ forloop.counter|add:"1" }}=true
+album.perms.del_alb.{{ forloop.counter|add:"1" }}=true
+album.perms.create_sub.{{ forloop.counter|add:"1" }}=true
+album.info.extrafields.{{ forloop.counter|add:"1" }}=Summary,Description
+{% endfor %}album_count={{ numalbums }}
+debug_user=
+can_create_root=yes
+status={{ status }}
+status_text={{ status_text }}
+auth_token=

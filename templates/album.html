@@ -1,0 +1,58 @@
+{% extends "gallery_base.html" %}
+{% load thumbnail %}
+{% load markup %}
+{% block extratitle %} gallery || {{ album.title }} {% endblock %}
+{% block extrarightnav %}
+	<h2>This Album</h2>
+	<ul>
+		<li><a class="fullscreenlink"  href="?fullscreen=1" rel="popup fullScreen">View in Window</a></li>
+		<li><a class="rsslink" href="photocast/">Photocast RSS</a></li>
+		<li><img src="http://lite.piclens.com/images/PicLensButton.png"
+		  alt="PicLens" width="16" height="12" border="0"
+		align="absmiddle"><a href="javascript:PicLensLite.start();">PicLens</a>
+	</ul>
+{% endblock %}
+
+
+{% block maincontent %}
+<h3>{{ album.title}}</h3>
+{% for item in album.galleryitem_set.all %}
+<a href="{{ item.get_image_url|thumbnail:"width=640,height=480" }}" rel="lightbox[{{album.slug}}]"><img src="{{ item.get_image_url|thumbnail:"width=160,height=120"}}" /><span class="mbf-item">#gallery {{ item.get_image_url }}</span></a>
+{% endfor %}
+
+
+{% comment %}
+<div id="flashcontent">SimpleViewer requires Macromedia Flash. <a href="http://www.macromedia.com/go/getflashplayer/">Get Macromedia Flash.</a> If you have Flash installed, <a href="index.html?detectflash=false">click to view gallery</a>.</div>	
+<script type="text/javascript">
+	var fo = new SWFObject("{{media_url}}simpleviewer/viewer.swf",
+"viewer","100%", "480", "7",
+"#ffffff");	
+   	fo.addParam("Quality", "Autohigh");
+	fo.addVariable("preloaderColor", "0x333333");
+	fo.addVariable("xmlDataPath", "simpleviewer");	
+	fo.write('flashcontent');
+		
+	
+</script>
+</div>
+{% comment %}
+	{% get_free_comment_count for xgallery.album  album.id as comment_count %}
+	{% get_free_comment_list for xgallery.album album.id as comment_list %}
+{% endcomment %}
+	<h3>Comments</h3>
+	{% comment %}
+	{% for comment in comment_list %}
+		<div class="comment {% cycle odd,even %}" id="c{{ comment.id }}">
+			<span class="comnum"><a id="c{{ comment.id }}" href="#c{{ comment.id }}"></a></span>
+			<h3><a href="{{comment.person_url}}">{{ comment.person_name }}</a></h3>
+		    <small class="postmeta"><a class="commentslink">{{ comment.submit_date|date:"F j, Y" }} at {{ comment.submit_date|date:"P" }}:</a></small>
+			{{ comment.comment|urlizetrunc:40|markdown }}
+		</div>
+	{% endfor %}
+	<div id="commentform">
+	{% free_comment_form for xgallery.album album.id %}
+	</div>
+	{% endcomment %}
+
+
+{% endblock %}

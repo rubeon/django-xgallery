@@ -1,0 +1,33 @@
+{% extends "gallery_base.html" %}
+{% block extratitle %} gallery overview {% endblock %}
+{% load thumbnail %}
+{% block maincontent %}
+<h3>Photo Galleries</h3>
+{% for album in albums %}
+{% comment %}
+{% get_free_comment_count for xgallery.album album.id as comment_count %}
+{% endcomment %}
+<div id="post-{{ album.id}}">
+	{% ifchanged%}
+	<h2>{{ album.pub_date|date:"F d, Y" }}</h2>
+	{% endifchanged %}
+
+	<div class="itemhead">
+		<h3><a href="{{ album.get_absolute_url}}">{{album.title }}</a></h3>
+		<small class="metadata">
+		  <span class="chronodata">Posted on 
+		  <span class="vcard author">{{ album.pub_date|date:"M d, Y" }}</span><br />
+		  <a class="commentslink" href="{{ album.get_absolute_url }}/#comments" title="Comments on {{ album.title }}">{{ comment_count  }} Comments</a>   <a class="fullscreenlink" href="{{album.get_absolute_url}}?fullscreen=1" rel="popup fullScreen">View Fullscreen</a>
+		 </span>
+		 </small>
+	</div><!-- /itemhead -->
+	<div class="entrycontent">
+
+		{% for thumb in album.get_random_thumbnail  %}
+		   <p><a href="{{ album.get_absolute_url }}"><img alt="Thumbnail for {{ album.title}}" src="{{ thumb.get_image_url|thumbnail:"width=120"}}" /></a></p>
+		   <p>{{album.description}}</p>{% endfor %}	
+	</div><!-- /entrycontent -->
+</div><!-- /post-{{ album.id }} -->
+
+	{% endfor %}
+{% endblock %}

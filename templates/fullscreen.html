@@ -1,0 +1,37 @@
+{% extends "gallery_base.html" %}
+{% block pagestyle %}fullscreen{% endblock %}
+{% block top %}
+{% endblock %}
+
+{% load thumbnail %}
+{% block leftnav %}
+{% endblock %}
+{% block rightnav %}
+	<p class="blogrollheader">Controls</p>
+	<p><a href="#" onclick="window.close()">Close this Window</a></p>
+{% endblock %}
+{% block maincontent %}
+<div id="flashcontent">SimpleViewer requires Macromedia Flash. <a href="http://www.macromedia.com/go/getflashplayer/">Get Macromedia Flash.</a> If you have Flash installed, <a href="index.html?detectflash=false">click to view gallery</a>.</div>	
+<script type="text/javascript">
+	var fo = new SWFObject("{{media_url}}simpleviewer/viewer.swf", "viewer", "100%",
+"480", "7", "#ffffff");	
+   	fo.addParam("Quality", "Autohigh");
+	fo.addVariable("preloaderColor", "0x333333");
+	fo.addVariable("xmlDataPath", "simpleviewer");	
+	fo.write("flashcontent");
+</script>
+
+
+{% comment %}
+	
+
+{% for item in album.galleryitem_set.all %}
+	<div class="gallerythumb">
+		<p><img src="{{ item.get_image_url|thumbnail:"height=120,width=90" }}" /></p>
+		<p><a href="{{ item.get_image_url }}">{{ item.title }}</a></p>
+	</div>
+{% endfor %}
+{% endcomment %}	
+{% endblock %}
+{% block extrafooter %}
+{% endblock %}
