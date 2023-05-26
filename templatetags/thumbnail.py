@@ -96,6 +96,6 @@ Usage:
     return height
 #
 
-register.filter('thumbnail', thumbnail)
-register.filter('image_width', image_width)
-register.filter('image_height', image_height)
+register.filter('xgallery_thumbnail', thumbnail)
+register.filter('xgallery_image_width', image_width)
+register.filter('xgallery_image_height', image_height)
