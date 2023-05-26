@@ -1,8 +1,10 @@
 # Create your views here.
 from django.template import RequestContext, Context, loader
-
+import logging
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from xgallery.models import *
+
+LOGGER=logging.getLogger(__name__)
 
 def overview(request):
     albums = Album.objects.all()[:10]
@@ -10,7 +12,6 @@ def overview(request):
     d['albums']=albums
     c = RequestContext(request, d)
     t = loader.get_template('overview.html')
-    print t
     return HttpResponse(t.render(c))
     
     
@@ -52,7 +53,7 @@ def showalbum(request, slug):
     d['album']=album
     c = RequestContext(request, d)
     if request.GET.get('fullscreen', False):
-        print "REQUEST:FULLSCREEN"
+        LOGGER.debug("REQUEST:FULLSCREEN")
         t = loader.get_template('fullscreen.html')
     else:
         t = loader.get_template('album.html')

@@ -1,15 +1,13 @@
-from django.db.models.fields import ImageField
+# from django.db.models.fields import ImageField
+from django.db import models
 from xgallery.thumbnail.utils import make_thumbnail, _remove_thumbnails, remove_model_thumbnails, rename_by_field
-from django.dispatch import dispatcher
-from django.db.models import signals
 
 def _delete(instance=None):
     if instance:
-        print '[thumbnail] DELETE', instance
         remove_model_thumbnails(instance)
 #
 
-class ImageWithThumbnailField(ImageField):
+class ImageWithThumbnailField(models.ImageField):
     """ ImageField with thumbnail support
     
         auto_rename: if it is set perform auto rename to
@@ -21,8 +19,6 @@ class ImageWithThumbnailField(ImageField):
         self.width_field, self.height_field = width_field, height_field
         super(ImageWithThumbnailField, self).__init__(verbose_name, name, width_field, height_field, **kwargs)
         self.auto_rename = auto_rename
-    #
-    
     def _save(self, instance=None):
         if not self.auto_rename: return
         if instance == None: return
@@ -35,15 +31,6 @@ class ImageWithThumbnailField(ImageField):
                                         )
                                    )
         setattr(instance, self.attname, image)
-    #
     
-    def contribute_to_class(self, cls, name):
-        super(ImageWithThumbnailField, self).contribute_to_class(cls, name)
-        dispatcher.connect(_delete, signals.post_delete, sender=cls)
-        dispatcher.connect(self._save, signals.pre_save, sender=cls)
-    #
-
     def get_internal_type(self):
         return 'ImageField'
-    #
-#

@@ -1,13 +1,11 @@
 from django.conf import settings
 from django import template
 from django.conf import settings
-from django.db.models.fields import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist
 from django.template import (
                              TemplateSyntaxError, 
                              Library, 
                              Node, 
-                             resolve_variable, 
-                             TokenParser, 
                              Template
                              )
 from django.utils.translation import gettext
@@ -72,7 +70,7 @@ def format(f, val, decimal_point='.', grouping=True):
     elif len(fields) == 1:
         result = fields[0]
     else:
-        raise ValueError, "Too many decimal points in result string"
+        raise ValueError("Too many decimal points in result string")
 
     while seps:
         # If the number was formatted for a specific width, then it
@@ -141,9 +139,9 @@ def if_has_perm(parser, token):
     """    
     tokens = token.split_contents()
     if len(tokens)<2:
-        raise template.TemplateSyntaxError, "%r tag requires at least 1 arguments" % tokens[0]
+        raise template.TemplateSyntaxError("%r tag requires at least 1 arguments" % tokens[0])
     if len(tokens)>4:
-        raise template.TemplateSyntaxError, "%r tag should have no more then 3 arguments" % tokens[0]
+        raise template.TemplateSyntaxError("%r tag should have no more then 3 arguments" % tokens[0])
     
     nodelist_true = parser.parse(('else', 'end_'+tokens[0],))
     token = parser.next_token()
@@ -166,7 +164,7 @@ def if_has_perm(parser, token):
             object_var = parser.compile_filter(tokens[2])
 
     if not (permission[0] == permission[-1] and permission[0] in ('"', "'")):            
-        raise template.TemplateSyntaxError, "%r tag's argument should be in quotes" % tokens[0]
+        raise template.TemplateSyntaxError("%r tag's argument should be in quotes" % tokens[0])
     
     return HasPermNode(permission[1:-1], not_flag, object_var, nodelist_true, nodelist_false)
     
@@ -204,7 +202,8 @@ class HasPermNode(template.Node):
             object=None
         
         try:
-            user = template.resolve_variable("user", context)
+            # user = template.resolve_variable("user", context)
+            user = template.Variable("user").resolve(context)
         except template.VariableDoesNotExist:
             return settings.TEMPLATE_STRING_IF_INVALID
         
@@ -261,48 +260,6 @@ class FormFieldNode(Node):
         else:
             inline = ''
         #
-        try:
-            if not self.readonly:
-                if user is not None and not user.is_anonymous():
-                    model = resolve_variable(self.wrapper, context).manipulator.model #IGNORE:E1101
-                    try:
-                        fld = model._meta.get_field(self.field)
-                    except FieldDoesNotExist:
-                        raise TemplateSyntaxError, 'Field "%s" does not exists in model "%s"' % (self.field, model._meta.object_name)
-                    #
-                    if fld.rel:
-                        to = fld.rel.to._meta
-                        if user.has_perm('%s.%s' % (to.app_label, to.get_add_permission())):
-                            alt = gettext('Add Another')
-                            module = to.module_name
-                            app_label = to.app_label
-                            addlink = '\n<a href="/admin/%(app_label)s/%(module)s/add/" class="add-another" id="add_{{ %(field)s.get_id }}" onclick="return showAddAnotherPopup(this);"> <img src="/admin-media/img/admin/icon_addlink.gif" alt="%(alt)s" height="10" width="10"></a>\n' % locals()
-                     #
-                    if self.filter is not None:
-                        if self.filter == 'horizontal':
-                            dir = 0
-                        else:
-                            dir = 1
-                        #js = Template('<script type="text/javascript">addEvent(window, "load", function(e) { SelectFilter.init("{{ %(field)s.get_id }}", "{{ %(field)s.get_member_name }}", %(dir)d, "/admin-media/"); });</script>' % locals())
-
-                #
-                t = Template(FTPL % locals())
-            else:
-                # XXX escape field data??
-                default = gettext('Empty')
-                t = Template(ROFTPL % locals())
-            #
-            if not self.single:
-                return t.render(context)
-            else:
-                if js is None:
-                    return '<div class="form-row">%s</div>' % t.render(context)
-                else:
-                    return '<div class="form-row">%s</div>%s' % (t.render(context), js.render(context))
-                    
-        except TemplateSyntaxError, e:
-            if settings.TEMPLATE_DEBUG:
-                raise
         return ''
     #
 #
@@ -319,55 +276,6 @@ def formfield(parser, token):
 
         {% formfield <field> <label> [filter horizontal|vertical] [as [readonly] [inline] %}
     """
-    class Parser(TokenParser):
-        def top(self):
-            field = None
-            label = None
-            readonly = False
-            inline = False
-            single = False
-            filter = None
-            ct = 0
-
-            while self.more():
-                if ct == 0:
-                    field = self.value()
-                elif ct == 1:
-                    val = self.value().strip('"')
-                    val = val.strip("'")
-                    r = I18NRE.match(val)
-                    if r:
-                        label = gettext(r.group(1))
-                    else:
-                        label = val
-                else:
-                    tag = self.tag()
-                    if tag == 'filter':
-                        filter = self.value()
-                        single = True # force single
-                    elif tag == 'as':
-                        while self.more():
-                            tag = self.tag()
-                            if tag == 'readonly':
-                                readonly = True
-                            elif tag == 'inline':
-                                inline = True
-                            elif tag == 'single':
-                                single = True
-                            else:
-                                raise TemplateSyntaxError, "'formfield' syntax error (got %r)" % tag
-                        #
-                    else:
-                        raise TemplateSyntaxError, "'formfield' syntax error"
-                    #
-                #
-                ct += 1
-            # while
-            return field, label, readonly, inline, single, filter
-        #
-    field, label, readonly, inline, single, filter = Parser(token.contents).top()
-    return FormFieldNode(field, label, readonly, inline, single, filter)
-#
 
 class FormRowNode(Node):
     def __init__(self, nodelist):

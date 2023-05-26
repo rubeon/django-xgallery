@@ -1,12 +1,18 @@
 from django.conf import settings
-from django.core.cache import get_cache
-from django.db.models.fields import ImageField
+# from django.core.cache import get_cache
+# from django.db.models.fields import ImageField
+from django.db import models
 from xgallery.utils.text import URLify
-import Image
-import re, os, urlparse, fnmatch
-import shutil, os
+from PIL import Image
+from urllib.parse import urlparse
 
-image_cache = get_cache('locmem:///')
+# import re, os, urlparse, fnmatch
+import re
+import os
+import fnmatch
+import shutil
+
+# image_cache = get_cache('locmem:///')
 
 _FILE_CACHE_TIMEOUT = 60 * 60 * 60 * 24 * 31 # 1 month
 _THUMBNAIL_GLOB = '%s_t*%s'
@@ -52,7 +58,6 @@ def _get_url_from_path(path, root=settings.MEDIA_ROOT, url_root=settings.MEDIA_U
     if path.startswith(root):
         path = path[len(root):] # strip media root
     res =  urlparse.urljoin(root, path.replace('\\', '/'))
-    print "DEBUG: %s" % res
     return res
 #
 
@@ -109,17 +114,13 @@ def make_thumbnail(photo_url, width=None, height=None, root=settings.MEDIA_ROOT,
         img = Image.open(photo_path).copy()
         img.thumbnail(size, Image.ANTIALIAS)
         default_thumbpath = os.path.dirname(th_path)
-        print "DEFAULT_THUMBPATH:", default_thumbpath
-        print "THPATH:", th_path
         # now create the same thumbnail in a default 'thumbs' directory...
         if not os.path.exists(default_thumbpath):
-            print "CREATING", default_thumbpath
             os.makedirs(default_thumbpath)
         img.save(th_path)
-    except Exception, err:
+    except Exception as err:
         # this goes to webserver error log
         import sys, traceback
-        print >>sys.stderr, '[MAKE THUMBNAIL] error %s for file %r' % (err, photo_url)
         traceback.print_exc()
         return photo_url
 
@@ -136,15 +137,15 @@ def _remove_thumbnails(photo_url, root=settings.MEDIA_ROOT, url_root=settings.ME
     for file in fnmatch.filter(os.listdir(basedir), _THUMBNAIL_GLOB % (base, ext)):
         path = os.path.join(basedir, file)
         os.remove(path)
-        image_cache.delete(path) # delete from cache
+        # image_cache.delete(path) # delete from cache
     #
 #
 
 def remove_model_thumbnails(model):
-    """ remove all thumbnails for all ImageFields (and subclasses) in the model """
+    """ remove all thumbnails for all models.ImageFields (and subclasses) in the model """
     
     for obj in model._meta.fields:
-        if isinstance(obj, ImageField):
+        if isinstance(obj, models.ImageField):
             url = getattr(model, 'get_%s_url' % obj.name)()
             _remove_thumbnails(url)
     #
@@ -156,10 +157,10 @@ def _make_admin_thumbnail(url):
 #
 
 def make_admin_thumbnails(model):
-    """ create thumbnails for admin interface for all ImageFields (and subclasses) in the model """
+    """ create thumbnails for admin interface for all models.ImageFields (and subclasses) in the model """
     
     for obj in model._meta.fields:
-        if isinstance(obj, ImageField):
+        if isinstance(obj, models.ImageField):
             url = getattr(model, 'get_%s_url' % obj.name)()
             make_thumbnail(url, width=120)
     #
@@ -186,7 +187,7 @@ def _set_cached_file(path, value):
     """
     
     mtime = os.path.getmtime(path)
-    image_cache.set(path, (mtime, value,), _FILE_CACHE_TIMEOUT)
+    # image_cache.set(path, (mtime, value,), _FILE_CACHE_TIMEOUT)
 #
 
 def _get_cached_file(path, default=None):
@@ -195,13 +196,14 @@ def _get_cached_file(path, default=None):
         data from cache.
     """
     
-    cached = image_cache.get(path, default)
+    # cached = image_cache.get(path, default)
+    cached = None
     if cached is None:
         return None
     mtime, value = cached
     
     if (not os.path.isfile(path)) or (os.path.getmtime(path) != mtime): # file is changed or deleted
-        image_cache.delete(path) # delete from cache
+        # image_cache.delete(path) # delete from cache
         # remove thumbnails if exists
         base, ext = os.path.splitext(os.path.basename(path))
         basedir = os.path.dirname(path)
@@ -224,10 +226,9 @@ def get_image_size(photo_url, root=settings.MEDIA_ROOT, url_root=settings.MEDIA_
     if size is None:
         try:
             size = Image.open(path).size
-        except Exception, err:
+        except Exception as err:
             # this goes to webserver error log
             import sys
-            print >>sys.stderr, '[GET IMAGE SIZE] error %s for file %r' % (err, photo_url)
             return None, None
         #
         if size is not None:

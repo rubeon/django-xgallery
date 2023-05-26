@@ -57,7 +57,7 @@ class ThreadLocals(object):
 #                )
 #    fields = property(_fields)
 
-from django.contrib.auth.views import login
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 class SiteLogin:
     "This middleware requires a login for every view from http://superjared.com/entry/requiring-login-entire-django-powered-site/"

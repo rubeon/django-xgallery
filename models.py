@@ -11,7 +11,7 @@ class Gallery(models.Model):
     """(Gallery description)"""
     title = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
-    slug = models.SlugField(prepopulate_from=("title",))
+    slug = models.SlugField(blank=False, null=False)
 
     class Admin:
         #list_display = ('',)
@@ -23,13 +23,13 @@ class Gallery(models.Model):
 
 class Album(models.Model):
     """ Gallery Albums """
-    gallery = models.ForeignKey(Gallery)
+    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     title = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
-    slug = models.SlugField(prepopulate_from=("title",))
-    owner = models.ForeignKey(User)
-    pub_date = models.DateTimeField(blank=True, default=datetime.datetime.now())
-    update_date = models.DateTimeField(blank=True, default=datetime.datetime.now())
+    slug = models.SlugField(blank=False, null=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    update_date = models.DateTimeField(blank=True, default=datetime.datetime.now)
     
     def get_random_thumbnail(self):
         # not really random, is it?
@@ -52,12 +52,13 @@ class Album(models.Model):
 
 class GalleryItem(models.Model):
     """ Pictures and Movies..."""
-    album        = models.ForeignKey(Album)
-    image        = ImageWithThumbnailField(upload_to="gallery_uploads", auto_rename=False, height_field='image_height', width_field='image_width')
+    album        = models.ForeignKey(Album, on_delete=models.CASCADE)
+    # image        = ImageWithThumbnailField(upload_to="gallery_uploads", auto_rename=False, height_field='image_height', width_field='image_width')
+    image = models.ImageField(upload_to="gallery_uploads", height_field='image_height', width_field='image_width')
     image_height = models.IntegerField(blank=True, null=True)
     image_width  = models.IntegerField(blank=True, null=True)
     title        = models.CharField(blank=True, max_length=255)
-    slug         = models.SlugField(prepopulate_from=("title",))
+    slug         = models.SlugField(blank=False, null=False)
     mimetype     = models.CharField(blank=True, max_length=255)
 
     class Admin:
@@ -68,7 +69,6 @@ class GalleryItem(models.Model):
     def get_file_name(self):
         # returns the path to my file name
         src = self.get_image_url()
-        print "SRC:", src
         return os.path.split(src)[-1]
         
     def __str__(self):

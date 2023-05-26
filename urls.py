@@ -8,13 +8,15 @@ Copyright (c) 2007 xoffender Administration & Development. All rights reserved.
 """
 
 
-from django.conf.urls.defaults import *
+# from django.conf.urls.defaults import *
+from django.urls import re_path
+from . import views
 
-urlpatterns = patterns(  '',
-    (r'^(?P<slug>[-\w]+)/simpleviewer/$', 'xgallery.views.simpleviewer'),
-    (r'^(?P<slug>[-\w]+)/photocast/$', 'xgallery.views.photocast'),
-    (r'^(?P<slug>[-\w]+)/cooliris/$', 'xgallery.views.cooliris'),
-    (r'^(?P<slug>[-\w]+)/$', 'xgallery.views.showalbum'),
-    # (r'^item/(?P<slug>[-\w]+)/$', 'xgallery.views.showitem'),
-    (r'^$', 'xgallery.views.overview')
-)
+urlpatterns = [
+    re_path(r'^re_path(?P<slug>[-\w]+)/simpleviewer/$', views.simpleviewer),
+    re_path(r'^re_path(?P<slug>[-\w]+)/photocast/$', views.photocast),
+    #re_path(r'^re_path(?P<slug>[-\w]+)/cooliris/$', 'xgallery.views.cooliris'),
+    #re_path(r'^re_path(?P<slug>[-\w]+)/$', 'xgallery.views.showalbum'),
+    # re_path(r'^item/re_path(?P<slug>[-\w]+)/$', 'xgallery.views.showitem'),
+    re_path(r'^$', views.overview),
+]
