@@ -1,6 +1,5 @@
 {% extends "gallery_base.html" %}
 {% load thumbnail %}
-{% load markup %}
 {% block extratitle %} gallery || {{ album.title }} {% endblock %}
 {% block extrarightnav %}
 	<h2>This Album</h2>
@@ -17,7 +16,7 @@
 {% block maincontent %}
 <h3>{{ album.title}}</h3>
 {% for item in album.galleryitem_set.all %}
-<a href="{{ item.get_image_url|thumbnail:"width=640,height=480" }}" rel="lightbox[{{album.slug}}]"><img src="{{ item.get_image_url|thumbnail:"width=160,height=120"}}" /><span class="mbf-item">#gallery {{ item.get_image_url }}</span></a>
+<a href="{% thumbnail item.image '640x480' %}" rel="lightbox[{{album.slug}}]"><img src="{% thumbnail item.image '160x120' %}" /><span class="mbf-item">#gallery {{ item.get_image_url }}</span></a>
 {% endfor %}
 
 

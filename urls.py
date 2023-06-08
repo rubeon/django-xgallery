@@ -12,11 +12,13 @@ Copyright (c) 2007 xoffender Administration & Development. All rights reserved.
 from django.urls import re_path
 from . import views
 
+app_name = 'xgallery'
+
 urlpatterns = [
-    re_path(r'^re_path(?P<slug>[-\w]+)/simpleviewer/$', views.simpleviewer),
-    re_path(r'^re_path(?P<slug>[-\w]+)/photocast/$', views.photocast),
-    #re_path(r'^re_path(?P<slug>[-\w]+)/cooliris/$', 'xgallery.views.cooliris'),
-    #re_path(r'^re_path(?P<slug>[-\w]+)/$', 'xgallery.views.showalbum'),
-    # re_path(r'^item/re_path(?P<slug>[-\w]+)/$', 'xgallery.views.showitem'),
-    re_path(r'^$', views.overview),
+    re_path(r'(?P<slug>[-\w]+)/simpleviewer/$', views.default.simpleviewer),
+    re_path(r'(?P<slug>[-\w]+)/photocast/$', views.default.photocast),
+    re_path(r'(?P<slug>[-\w]+)/cooliris/$', views.default.cooliris),
+    re_path(r'(?P<slug>[-\w]+)/$', views.default.showalbum),
+    # re_path(r'^item/re_path(?P<slug>[-\w]+)/$', 'xgallery.views.default.showitem'),
+    re_path(r'^$', views.default.overview),
 ]
