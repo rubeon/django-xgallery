@@ -5,6 +5,10 @@ galleryAPI.py
 
 Created by Eric Williams on 2007-03-21.
 Copyright (c) 2007 xoffender Administration & Development. All rights reserved.
+
+NOTE: this is obsolete, I don't think the gallery2 API really exists any more
+
+https://github.com/dakanji/G2Project
 """
 
 import sys

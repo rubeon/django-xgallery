@@ -24,7 +24,7 @@
 	<div class="entrycontent">
 
 		{% for thumb in album.get_random_thumbnail  %}
-		   <p><a href="{{ album.slug }}/"><img alt="Thumbnail for {{ album.title}}" src="{% thumbnail thumb.image '150x150' %}" /></a></p>
+		   <p><a href="{{ album.slug }}/"><img alt="Thumbnail for {{ album.title}}" src="{% thumbnail thumb.image 'medium' %}" /></a></p>
 		   <p>{{album.description}}</p>{% endfor %}	
 	</div><!-- /entrycontent -->
 </div><!-- /post-{{ album.id }} -->

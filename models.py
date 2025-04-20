@@ -57,13 +57,20 @@ class Album(models.Model):
         self.update_date = datetime.datetime.now()
         super(Album, self).save(*args, **kwargs)
 
+def image_upload_path(instance, filename):
+    return os.path.join(
+      'gallery_uploads',
+      instance.album.slug,
+      filename
+    )
 
 class GalleryItem(models.Model):
     """ Pictures and Movies..."""
     # TODO: put in some metadata capture when something gets uploaded...
     album        = models.ForeignKey(Album, on_delete=models.CASCADE)
     # image        = ImageWithThumbnailField(upload_to="gallery_uploads", auto_rename=False, height_field='image_height', width_field='image_width')
-    image = models.ImageField(upload_to="gallery_uploads", height_field='image_height', width_field='image_width')
+    # image = models.ImageField(upload_to=f"gallery_uploads/{self.album.slug}/", height_field='image_height', width_field='image_width')
+    image = models.ImageField(upload_to=image_upload_path, height_field='image_height', width_field='image_width')
     image_height = models.IntegerField(blank=True, null=True)
     image_width  = models.IntegerField(blank=True, null=True)
     title        = models.CharField(blank=True, max_length=255)
@@ -94,7 +101,7 @@ class GalleryItem(models.Model):
     def save(self, *args, **kwargs):
         self.update_date = datetime.datetime.now()
         self.slug = slugify(str(self.title))
-        easy_thumbnails.files.generate_all_aliases(self.image, False) 
+        # easy_thumbnails.files.generate_all_aliases(self.image, False) 
         super(GalleryItem, self).save(*args, **kwargs)
         
     def __str__(self):
