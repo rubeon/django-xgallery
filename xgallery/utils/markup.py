@@ -38,7 +38,7 @@ def render_content(content, text_type, images=None):
             # this can never happen
             return 'UNKNOWN CONTENT %d' % text_type
 
-    except template.TemplateSyntaxError, err:
+    except template.TemplateSyntaxError as err:
         return 'ERROR: %s' % err
 
     new = ret[:] # XXX why?

@@ -1,5 +1,4 @@
 import urllib
-import urllib2
 
 def urljoin(root, *args, **kwargs):
     """ join urls like os.path.join """
@@ -36,21 +35,15 @@ def url_normalize(url, strip_get=True):
 # url_normalize
 
 def check_url(url):
-    print 'URL: Check for', url,
-    import urllib2
     try:
-        u = urllib2.urlopen(url)
-    except ValueError, e:
-        print e
+        u = urllib.request.urlopen(url)
+    except ValueError as e:
         return False
-    except urllib2.HTTPError, e:
+    except urllib.HTTPError as e:
         # 401s are valid; they just mean authorization is required.
         if e.code not in ('401',):
-            print e
             return False
-    except Exception, e: # urllib2.URLError, httplib.InvalidURL, etc.
-        print e
+    except Exception as e: # urllib2.URLError, httplib.InvalidURL, etc.
         return False
-    print 'OK'
     return True
 #
