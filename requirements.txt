@@ -1,4 +1,4 @@
 Pillow
 Django
 django-xblog
-easy_thumbnails
+easy-thumbnails
