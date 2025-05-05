@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+
 try:
     from xmlrpc.client import Fault
     from xmlrpc.client import ServerProxy
@@ -19,7 +20,7 @@ from xgallery.models import Gallery, GalleryItem
 from xblog.models import Author, Blog
 from hashlib import md5
 
-from .utils import TestTransport
+from .utils import TransportTest
 
 class WpTests(TestCase):
     def setUp(self):
@@ -53,7 +54,7 @@ class WpTests(TestCase):
         )
 
         self.server_proxy = ServerProxy('http://localhost:8000/xmlrpc/',
-                                        transport=TestTransport(),
+                                        transport=TransportTest(),
                                         verbose=0)
 
     def test_image_upload_with_logged_in_user(self):

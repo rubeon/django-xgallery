@@ -10,7 +10,7 @@ except ImportError:  # Python 2
     from urlparse import urlparse
     from xmlrpclib import Transport
 
-class TestTransport(Transport):
+class TransportTest(Transport):
     """
     Handles connections to XML-RPC server through Django test client.
     """
