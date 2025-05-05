@@ -16,8 +16,6 @@ app_name = 'xgallery'
 
 urlpatterns = [
     re_path(r'(?P<slug>[-\w]+)/simpleviewer/$', views.default.simpleviewer),
-    re_path(r'(?P<slug>[-\w]+)/photocast/$', views.default.photocast),
-    re_path(r'(?P<slug>[-\w]+)/cooliris/$', views.default.cooliris),
     re_path(r'(?P<slug>[-\w]+)/$', views.default.showalbum),
     # re_path(r'^item/re_path(?P<slug>[-\w]+)/$', 'xgallery.views.default.showitem'),
     re_path(r'^$', views.default.overview, name="overview",),
