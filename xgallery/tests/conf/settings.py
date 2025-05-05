@@ -1,7 +1,7 @@
 # Minimal Django settings for testing xgallery
 USE_TZ=True
 TIME_ZONE="UTC"
-ROOT_URLCONF="tests.conf.urls"
+ROOT_URLCONF="xgallery.tests.conf.urls"
 SITE_ID = 1
 INSTALLED_APPS = [
     'easy_thumbnails',
