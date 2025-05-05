@@ -15,33 +15,6 @@ def overview(request):
     return HttpResponse(t.render(d))
     
     
-def photocast(request, slug=None):
-    d = {}
-    try:
-      a = Album.objects.get(slug__iexact=slug)
-    except Album.DoesNotExist:
-      raise Http404
-    d['album']=a
-    t = loader.get_template('album_photocast.html')
-    # c = RequestContext(request, d)
-    return HttpResponse(t.render(d))
- 
-def cooliris(request, slug=None):
-    # theoretically, it would create the rss-feed necessary
-    # to generate content for the cooliris safari plugin.
-    # then again, I've been drinking
-    d = {}
-    # catch an exception...
-    try:
-      a = Album.objects.get(slug__iexact=slug)
-    except Album.DoesNotExist:
-      raise Http404
-      
-    d['album']=a
-    t = loader.get_template('album_cooliris.html')
-    # c = RequestContext(request,d)
-    return HttpResponse(t.render(d))
-
 def showalbum(request, slug):
     # shows a particular gallery
     try:
@@ -52,11 +25,7 @@ def showalbum(request, slug):
     d = {}
     d['album']=album
     # c = RequestContext(request, d)
-    if request.GET.get('fullscreen', False):
-        LOGGER.debug("REQUEST:FULLSCREEN")
-        t = loader.get_template('fullscreen.html')
-    else:
-        t = loader.get_template('album.html')
+    t = loader.get_template('album.html')
     return HttpResponse(t.render(d))
     
 
