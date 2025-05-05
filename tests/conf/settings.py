@@ -1,14 +1,21 @@
 # Minimal Django settings for testing xgallery
 
-ROOT_URLCONF="xgallery.urls"
-
+ROOT_URLCONF="tests.conf.urls"
+SITE_ID = 1
 INSTALLED_APPS = [
-    'django.contrib.sites',
-    'django.contrib.contenttypes',
-    'django.contrib.auth',  # Required if xgallery uses auth-related models
-    'xgallery',  # Your app
-    'xblog',
     'easy_thumbnails',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+    'xblog',
+    'xgallery',
+    'markdown_deux',
+    'django_xmlrpc_dx'
 ]
 
 DATABASES = {

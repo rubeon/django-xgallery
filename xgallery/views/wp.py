@@ -264,6 +264,7 @@ def uploadFile(blog_id, username, password, data, overwrite=True):
         base64 bits: binary data. Needs to be base64-encoded.
         bool overwrite: Optional. Has no effect (see 17604). Was intended to overwrite an existing attachment of the same name. (Added in WordPress 2.2)
         int post_id: Optional. Allows an attachment to be assigned to a post. (User must have permission to edit the assigned post)
+        caption: Optional -- xgallery extension
 
     Return Values
     struct
@@ -289,6 +290,7 @@ def uploadFile(blog_id, username, password, data, overwrite=True):
         album=album,
         title=data.get('name', 'Untitled'),
         mimetype=data.get('type'),
+        caption = data.get('caption')
     )
     item.save()
     if data.get('post_id'):
