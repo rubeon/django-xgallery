@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
+from django.utils import timezone
 from django.conf import settings
 import os
 from xblog.models import Blog, Post
@@ -25,8 +25,8 @@ class Album(models.Model):
     title = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
     slug = models.SlugField(blank=False, null=False)
-    pub_date = models.DateTimeField(blank=True, default=datetime.datetime.now)
-    update_date = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    pub_date = models.DateTimeField(blank=True, default=timezone.now)
+    update_date = models.DateTimeField(blank=True, default=timezone.now)
     
     @property
     def owner(self):
@@ -53,7 +53,7 @@ class Album(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
           self.slug = slugify(str(self.title))
-        self.update_date = datetime.datetime.now()
+        self.update_date = timezone.now()
         super(Album, self).save(*args, **kwargs)
 
 def image_upload_path(instance, filename):
@@ -77,8 +77,8 @@ class GalleryItem(models.Model):
     description = models.TextField(blank=True)
     slug         = models.SlugField(blank=False, null=False)
     mimetype     = models.CharField(blank=True, max_length=255)
-    pub_date = models.DateTimeField(blank=True, default=datetime.datetime.now)
-    update_date = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    pub_date = models.DateTimeField(blank=True, default=timezone.now)
+    update_date = models.DateTimeField(blank=True, default=timezone.now)
     posts = models.ManyToManyField(Post, blank=True, null=True, related_name='images')
 
     class Admin:
@@ -98,7 +98,7 @@ class GalleryItem(models.Model):
         return os.path.basename(self.image.name)
 
     def save(self, *args, **kwargs):
-        self.update_date = datetime.datetime.now()
+        self.update_date = timezone.now()
         self.slug = slugify(str(self.title))
         # easy_thumbnails.files.generate_all_aliases(self.image, False) 
         super(GalleryItem, self).save(*args, **kwargs)
