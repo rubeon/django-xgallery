@@ -85,6 +85,10 @@ class WpTests(TestCase):
             string url
             string type
         """
+        
+        remote_image = GalleryItem.objects.get(id=int(res['id'])).image.read()
+        remote_image_md5 = md5(remote_image)
+        self.assertEqual(remote_image_md5.hexdigest(), image_md5.hexdigest())
     
     def test_image_upload_with_caption(self):
         """
