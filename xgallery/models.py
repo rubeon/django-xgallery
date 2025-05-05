@@ -7,7 +7,6 @@ from xblog.models import Blog, Post
 import easy_thumbnails.files
 from django.utils.text import slugify
 
-
 # Create your models here.
 
 class Gallery(models.Model):

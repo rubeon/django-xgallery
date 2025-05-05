@@ -1,0 +1,39 @@
+[project]
+name = "django-xgallery"
+version = "0.1.0"
+description = "A Django app for gallery functionality"
+readme = "README.md"
+authors = [
+    { name = "rubeon", email = "your.email@example.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Framework :: Django",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "django>=4.0",
+    "django-xblog",
+    "easy-thumbnails",
+    "Pillow",
+]
+
+[project.urls]
+Homepage = "https://github.com/rubeon/django-xgallery"
+Repository = "https://github.com/rubeon/django-xgallery.git"
+Issues = "https://github.com/rubeon/django-xgallery/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-django>=4.5.2",
+    "coverage>=7.6.0",
+    "pytest-cov>=4.1.0",
+]

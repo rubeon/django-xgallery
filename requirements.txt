@@ -1,0 +1,4 @@
+Pillow
+Django
+django-xblog
+easy-thumbnails

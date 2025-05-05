@@ -1,14 +1,14 @@
 XGallery
 ========
 
-XGallery is a project o show image galleries in a django application.  It's
+XGallery is a project to manage image galleries in a Django application.  It's
 integrated with the XBlog and XComments applications, and includes legacy
 the Gallery2 API.
 
 It's a bit rough around the edges, and has support for some things that just
 don't exist any more, like:
 
-- Photocast: I don't think Alle does this any more
+- Photocast: I don't think Apple does this any more
 - Gallery2 API: Gallery2 used to be popular and there were clients
 - Flash: Remember flash?
 - PicLens: pretty neat old gallery plugin, but nobody uses plugins any more
